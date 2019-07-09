@@ -54,6 +54,7 @@ profile = gate
 registry = 127.0.0.1:4000
 push = true
 logs_dir = /tmp/logs/build
+template_override = /etc/kolla/template_overrides.j2
 
 [profiles]
 gate = ${GATE_IMAGES}
@@ -89,7 +90,7 @@ function setup_ansible {
     RAW_INVENTORY=/etc/kolla/inventory
 
     # TODO(SamYaple): Move to virtualenv
-    sudo -H pip install -U "ansible>=2.4" "docker>=2.0.0" "python-openstackclient" "ara<1.0.0" "cmd2<0.9.0"
+    sudo -H pip install -U "ansible>=2.5" "docker>=2.0.0" "python-openstackclient" "ara<1.0.0" "cmd2<0.9.0"
     if [[ $ACTION == "zun" ]]; then
         sudo -H pip install -U "python-zunclient"
     fi
@@ -126,5 +127,5 @@ setup_ansible
 setup_config
 setup_node
 
-tools/kolla-ansible -i ${RAW_INVENTORY} -e ansible_user=$USER bootstrap-servers > /tmp/logs/ansible/bootstrap-servers
+tools/kolla-ansible -i ${RAW_INVENTORY} -e ansible_user=$USER -vvv bootstrap-servers &> /tmp/logs/ansible/bootstrap-servers
 prepare_images
